@@ -1,0 +1,36 @@
+# api-service/Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service-deployment
+  labels:
+    app: api-service
+spec:
+  replicas: 1 # Puedes aumentar esto para más instancias de tu API
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        app: api-service
+    spec:
+      containers:
+        - name: api-service
+          # La imagen que construyó y subió GitHub Actions.
+          image: ghcr.io/camilogh/ci_cd_project_demo/api-service:latest
+          ports:
+            - containerPort: 3001 # El puerto interno de tu contenedor
+          # Si tu API Service necesitara variables de entorno para una base de datos, etc., irían aquí.
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DB_HOST # Apunta al Service de MySQL
+              value: mysql-service # ¡El nombre del Service de MySQL!
+            - name: DB_PORT
+              value: "3306"
+          envFrom: # Inyecta variables de entorno desde el Secret de MySQL
+            - secretRef:
+              name: mysql-credentials
+      imagePullSecrets: # Necesario para que Kubernetes pueda jalar imágenes privadas de GHCR
+        - name: ghcr-secret
