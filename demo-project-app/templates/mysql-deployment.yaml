@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "demo-project-app.fullname" . }}-mysql
+  labels:
+    {{- include "demo-project-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+spec:
+  selector:
+    matchLabels:
+      {{- include "demo-project-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "demo-project-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+        ports:
+        - containerPort: 3306
+        envFrom:
+        - secretRef:
+            name: {{ include "demo-project-app.fullname" . }}-mysql-credentials
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        resources:
+          {{- toYaml .Values.mysql.resources | nindent 14 }}
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{ include "demo-project-app.fullname" . }}-mysql-pv-claim

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "demo-project-app.fullname" . }}-frontend-service
+  labels:
+    {{- include "demo-project-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend-service
+spec:
+  selector:
+    {{- include "demo-project-app.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend-service
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort

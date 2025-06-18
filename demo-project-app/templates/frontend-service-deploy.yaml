@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "demo-project-app.fullname" . }}-frontend-service
+  labels:
+    {{- include "demo-project-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend-service
+spec:
+  replicas: {{ .Values.frontendService.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "demo-project-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: frontend-service
+  template:
+    metadata:
+      labels:
+        {{- include "demo-project-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend-service
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 12 }}
+      {{- end }}
+      containers:
+      - name: frontend-service
+        image: "{{ .Values.frontendService.image.repository }}:{{ .Values.frontendService.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.frontendService.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+        env:
+        - name: API_URL
+          value: http://{{ include "demo-project-app.fullname" . }}-api-service:3001/data # Apunta al servicio API
+        resources:
+          {{- toYaml .Values.frontendService.resources | nindent 14 }}
