@@ -56,6 +56,7 @@ frontendService:
     requests:
       cpu: 100m
       memory: 128Mi
+    serviceType: LoadBalancer
 # Ingress configuration (opcional si usas ingress para frontend)
 # ingress:
 #   enabled: false
