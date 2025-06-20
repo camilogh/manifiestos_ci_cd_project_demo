@@ -6,6 +6,7 @@ metadata:
     {{- include "demo-project-app.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend-service
 spec:
+  type: {{ .Values.frontendService.serviceType }}
   selector:
     {{- include "demo-project-app.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: frontend-service
@@ -13,4 +14,3 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-  type: {{ .Values.frontendService.serviceType }}
