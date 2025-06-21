@@ -28,7 +28,7 @@ apiService:
   replicaCount: 1
   image:
     repository: ghcr.io/camilogh/ci_cd_project_demo/api-service
-    tag: "f65863da669950af4eaa83769071b36fc52d6d9c" # O el tag específico de tu imagen
+    tag: "5fbe450f6777ba5425a8bdf92ac6b884754092cd" # O el tag específico de tu imagen
     pullPolicy: IfNotPresent
   nodeEnv: production
   resources:
@@ -44,7 +44,7 @@ frontendService:
   replicaCount: 1
   image:
     repository: ghcr.io/camilogh/ci_cd_project_demo/frontend-service
-    tag: "f65863da669950af4eaa83769071b36fc52d6d9c" # O el tag específico de tu imagen
+    tag: "5fbe450f6777ba5425a8bdf92ac6b884754092cd" # O el tag específico de tu imagen
     pullPolicy: IfNotPresent
   resources:
     limits:
